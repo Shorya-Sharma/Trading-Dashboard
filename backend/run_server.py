@@ -17,7 +17,6 @@ def main():
     print("-" * 50)
 
     try:
-
         # Change to the project directory
         project_dir = os.path.dirname(os.path.abspath(__file__))
         os.chdir(project_dir)
