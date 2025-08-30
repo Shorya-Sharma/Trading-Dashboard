@@ -1,7 +1,10 @@
-import json, os
+import json
+import os
 from typing import List
-from app.models.order import Order
+
 from app.config import settings
+from app.models.order import Order
+
 
 class OrderRepository:
     def __init__(self, orders_dir: str = settings.ORDERS_DIR):

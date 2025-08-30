@@ -1,12 +1,17 @@
 from fastapi.testclient import TestClient
+
 from app.main import app
 
 client = TestClient(app)
 
+
 def test_invalid_symbol():
-    response = client.post("/api/orders", json={"symbol": "XYZ", "side": "BUY", "qty": 10, "price": 100})
+    response = client.post(
+        "/api/orders", json={"symbol": "XYZ", "side": "BUY", "qty": 10, "price": 100}
+    )
     assert response.status_code == 400
     assert "Invalid symbol" in response.json()["detail"]
+
 
 def test_order_creation_and_fetch():
     payload = {"symbol": "AAPL", "side": "SELL", "qty": 5, "price": 185}

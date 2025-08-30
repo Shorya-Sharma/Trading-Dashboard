@@ -1,44 +1,47 @@
-import { useEffect } from "react";
-import useStore from "../store/useStore";
-import { fetchOrders } from "../api/orders";
+import { useEffect, useState, useCallback } from 'react';
+import useStore from '../store/useStore';
+import { fetchOrders } from '../api/orders';
+import { Card, CardContent, Typography, Button } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
 export default function OrdersTable() {
-  const symbol = useStore((s) => s.selectedSymbol);
-  const orders = useStore((s) => s.orders);
-  const setOrders = useStore((s) => s.setOrders);
+  const symbol = useStore(s => s.selectedSymbol);
+  const [rows, setRows] = useState([]);
 
-  const loadOrders = () => {
-    if (symbol) fetchOrders(symbol).then(setOrders);
-  };
+  const loadOrders = useCallback(() => {
+    if (symbol) fetchOrders(symbol).then(setRows);
+  }, [symbol]);
 
   useEffect(() => {
     loadOrders();
-  }, [symbol]);
+  }, [loadOrders]);
 
-  if (!symbol) return <p>Select a symbol to view orders</p>;
+  if (!symbol) return null;
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'side', headerName: 'Side', width: 100 },
+    { field: 'qty', headerName: 'Qty', width: 100 },
+    { field: 'price', headerName: 'Price', width: 120 },
+    {
+      field: 'timestamp',
+      headerName: 'Time',
+      width: 200,
+      valueFormatter: params => new Date(params.value * 1000).toLocaleString(),
+    },
+  ];
 
   return (
-    <div>
-      <h3>Orders for {symbol}</h3>
-      <button onClick={loadOrders}>Refresh</button>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>ID</th><th>Side</th><th>Qty</th><th>Price</th><th>Timestamp</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((o) => (
-            <tr key={o.id}>
-              <td>{o.id}</td>
-              <td>{o.side}</td>
-              <td>{o.qty}</td>
-              <td>{o.price}</td>
-              <td>{new Date(o.timestamp * 1000).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Card sx={{ mt: 2 }}>
+      <CardContent>
+        <Typography variant="h6">Orders for {symbol}</Typography>
+        <Button onClick={loadOrders} variant="outlined" sx={{ mb: 2 }}>
+          Refresh
+        </Button>
+        <div style={{ height: 400, width: '100%' }}>
+          <DataGrid rows={rows} columns={columns} getRowId={row => row.id} />
+        </div>
+      </CardContent>
+    </Card>
   );
 }

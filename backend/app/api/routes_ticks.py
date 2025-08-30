@@ -1,9 +1,13 @@
+import asyncio
+import json
+
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-import asyncio, json
+
 from app.api.routes_symbols import SYMBOLS
 from app.utils.tick_generator import generate_tick
 
 router = APIRouter()
+
 
 @router.websocket("/ws/ticks")
 async def websocket_ticks(ws: WebSocket):

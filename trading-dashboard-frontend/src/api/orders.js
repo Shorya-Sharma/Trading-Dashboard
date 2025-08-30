@@ -4,9 +4,9 @@ export async function fetchOrders(symbol) {
 }
 
 export async function submitOrder(order) {
-  const res = await fetch("/api/orders", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const res = await fetch('/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(order),
   });
   return res.json();

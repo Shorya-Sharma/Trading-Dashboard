@@ -1,5 +1,8 @@
-import random, time
+import random
+import time
+
 from app.models.symbol import Symbol
+
 
 def generate_tick(symbol: Symbol):
     base = symbol.closePrice
@@ -8,5 +11,5 @@ def generate_tick(symbol: Symbol):
         "symbol": symbol.symbol,
         "price": price,
         "volume": random.randint(1, 100),
-        "timestamp": int(time.time())
+        "timestamp": int(time.time()),
     }

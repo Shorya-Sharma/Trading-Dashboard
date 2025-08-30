@@ -1,14 +1,8 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
-const useStore = create((set) => ({
+const useStore = create(set => ({
   selectedSymbol: null,
-  ticks: {},
-  orders: [],
-  setSymbol: (symbol) => set({ selectedSymbol: symbol }),
-  setTick: (symbol, price) => set((state) => ({
-    ticks: { ...state.ticks, [symbol]: price }
-  })),
-  setOrders: (orders) => set({ orders }),
+  setSymbol: symbol => set({ selectedSymbol: symbol }),
 }));
 
 export default useStore;
