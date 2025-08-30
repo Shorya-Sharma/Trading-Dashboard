@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard Control Panel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .endpoint-list {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .endpoint-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .method {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 Trading Dashboard Control Panel</h1>
+
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="startServer()">▶️ Start Server</button>
+            <button class="btn btn-secondary" onclick="openDocs()">📚 Open API Docs</button>
+            <button class="btn btn-secondary" onclick="openServer()">🌐 Open Server</button>
+            <button class="btn btn-danger" onclick="stopServer()">⏹️ Stop Server</button>
+        </div>
+
+        <div class="status">
+            <h3>📊 Server Status</h3>
+            <p id="serverStatus">Server not running</p>
+            <p><strong>Server URL:</strong> <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>
+            </p>
+            <p><strong>API Documentation:</strong> <a href="http://localhost:8000/docs"
+                    target="_blank">http://localhost:8000/docs</a></p>
+        </div>
+
+        <div class="endpoint-list">
+            <h3>🔗 Available API Endpoints</h3>
+            <div class="endpoint-item">
+                <span class="method">GET</span> /api/symbols - Get trading symbols
+            </div>
+            <div class="endpoint-item">
+                <span class="method">GET</span> /api/orders - Get orders
+            </div>
+            <div class="endpoint-item">
+                <span class="method">POST</span> /api/orders - Create new order
+            </div>
+            <div class="endpoint-item">
+                <span class="method">GET</span> /ticks - Get real-time tick data
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startServer() {
+            alert('To start the server, run: python run_server.py\n\nOr use your IDE\'s run button on main.py');
+        }
+
+        function openDocs() {
+            window.open('http://localhost:8000/docs', '_blank');
+        }
+
+        function openServer() {
+            window.open('http://localhost:8000', '_blank');
+        }
+
+        function stopServer() {
+            alert('To stop the server, press Ctrl+C in the terminal where it\'s running');
+        }
+
+        // Check server status
+        function checkServerStatus() {
+            fetch('http://localhost:8000/api/symbols')
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('serverStatus').innerHTML = '✅ Server is running';
+                        document.getElementById('serverStatus').style.color = '#4CAF50';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('serverStatus').innerHTML = '❌ Server is not running';
+                    document.getElementById('serverStatus').style.color = '#f44336';
+                });
+        }
+
+        // Check status every 5 seconds
+        setInterval(checkServerStatus, 5000);
+        checkServerStatus();
+    </script>
+</body>
+
+</html>

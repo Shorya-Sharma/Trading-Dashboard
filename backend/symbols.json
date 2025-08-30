@@ -1,0 +1,5 @@
+[
+  { "symbol": "AAPL", "name": "Apple Inc.", "market": "NASDAQ", "closePrice": 180.12 },
+  { "symbol": "MSFT", "name": "Microsoft Corp.", "market": "NASDAQ", "closePrice": 323.45 },
+  { "symbol": "BTC-USD", "name": "Bitcoin / USD", "market": "Crypto", "closePrice": 29000.00 }
+]
