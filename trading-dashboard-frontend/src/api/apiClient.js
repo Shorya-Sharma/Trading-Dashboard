@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// Create a reusable Axios client with base URL and default headers
 const apiClient = axios.create({
   baseURL: 'http://localhost:8000/api',
   headers: {
@@ -7,6 +8,11 @@ const apiClient = axios.create({
   },
 });
 
+/**
+ * Request Interceptor
+ * - Runs before every API request is sent
+ * - Can be used to attach authentication tokens or modify config
+ */
 apiClient.interceptors.request.use(
   config => {
     return config;
@@ -17,6 +23,12 @@ apiClient.interceptors.request.use(
   }
 );
 
+/**
+ * Response Interceptor
+ * - Runs after every API response is received
+ * - Extracts response data for easier use
+ * - Handles different types of errors (API, Network, Unexpected)
+ */
 apiClient.interceptors.response.use(
   response => response.data,
   error => {

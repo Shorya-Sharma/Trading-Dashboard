@@ -11,6 +11,12 @@ import {
 } from '@mui/material';
 import Header from '../components/Header';
 
+/**
+ * SymbolsPage component.
+ * - Loads available symbols from Redux store on first render
+ * - Displays them in a responsive grid with styled cards
+ * - Includes a header and page title
+ */
 export default function SymbolsPage() {
   const dispatch = useDispatch();
   const { list: symbols, status } = useSelector(state => state.symbols);

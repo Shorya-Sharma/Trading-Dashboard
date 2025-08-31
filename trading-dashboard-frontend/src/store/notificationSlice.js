@@ -5,6 +5,11 @@ export const NotificationType = {
   ERROR: 'error',
 };
 
+/**
+ * Redux slice for managing global notifications.
+ * - Stores open state, message, and type (success or error)
+ * - Provides reducers to show and hide notifications
+ */
 const notificationSlice = createSlice({
   name: 'notification',
   initialState: {

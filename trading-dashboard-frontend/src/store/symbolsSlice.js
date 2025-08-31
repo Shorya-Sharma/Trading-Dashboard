@@ -6,6 +6,11 @@ export const loadSymbols = createAsyncThunk('symbols/loadSymbols', async () => {
   return data;
 });
 
+/**
+ * Redux slice for managing tradeable symbols.
+ * - Handles async loading of symbols from the API
+ * - Stores list, loading status, and any error state
+ */
 const symbolsSlice = createSlice({
   name: 'symbols',
   initialState: {

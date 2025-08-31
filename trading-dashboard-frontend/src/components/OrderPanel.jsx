@@ -8,6 +8,11 @@ import {
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * OrderPanel component.
+ * - Displays a styled card with an order icon
+ * - Navigates to the "/order" page when clicked
+ */
 export default function OrderPanel() {
   const navigate = useNavigate();
 

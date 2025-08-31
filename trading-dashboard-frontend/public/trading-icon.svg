@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f2027;stop-opacity:1"></stop>
+      <stop offset="50%" style="stop-color:#203a43;stop-opacity:1"></stop>
+      <stop offset="100%" style="stop-color:#2c5364;stop-opacity:1"></stop>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="url(#grad)"></circle>
+
+  <!-- Upward Arrow (trading style) -->
+  <polyline points="25,60 45,40 60,55 80,30" fill="none" stroke="#00f5a0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+  <!-- Arrowhead -->
+  <polygon points="75,25 88,28 78,38" fill="#00f5a0"></polygon>
+</svg>

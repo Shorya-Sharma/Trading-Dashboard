@@ -35,7 +35,7 @@ export default function OrdersTable({ defaultSymbol = null }) {
   const [sideFilter, setSideFilter] = useState('ALL');
   const [liveMode, setLiveMode] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [sorting, setSorting] = useState([]); // ✅ sorting state
+  const [sorting, setSorting] = useState([]);
 
   const loadOrders = async () => {
     if (!selectedSymbol?.symbol) return;
@@ -115,7 +115,7 @@ export default function OrdersTable({ defaultSymbol = null }) {
   const table = useReactTable({
     data: filteredOrders,
     columns,
-    state: { sorting }, // ✅ use sorting state
+    state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

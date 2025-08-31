@@ -13,6 +13,11 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Header component with navigation drawer.
+ * - Displays an AppBar with a menu icon and title
+ * - Opens a side drawer for navigating between routes
+ */
 export default function Header() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();

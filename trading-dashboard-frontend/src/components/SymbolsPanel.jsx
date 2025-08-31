@@ -8,6 +8,11 @@ import {
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * SymbolsPanel component.
+ * - Displays a styled card with a chart icon
+ * - Navigates to the "/symbols" page when clicked
+ */
 export default function SymbolsPanel() {
   const navigate = useNavigate();
 

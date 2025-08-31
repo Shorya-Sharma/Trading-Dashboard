@@ -2,6 +2,11 @@ import { Snackbar, Alert, Box, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { hideNotification } from '../store/notificationSlice';
 
+/**
+ * Notification component for displaying global success/error messages.
+ * - Uses Redux state to control visibility, message, and type
+ * - Auto-hides after 4 seconds or can be manually closed
+ */
 export default function Notification() {
   const dispatch = useDispatch();
   const { open, message, type } = useSelector(state => state.notification);
