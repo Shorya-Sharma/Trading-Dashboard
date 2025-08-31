@@ -1,6 +1,8 @@
-body {
-  font-family: Arial, sans-serif;
+html,
+body,
+#root {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  background: #f9f9f9;
+  background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
+  background-attachment: fixed;
 }

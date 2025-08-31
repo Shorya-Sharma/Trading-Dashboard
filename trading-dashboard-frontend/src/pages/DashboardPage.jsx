@@ -5,30 +5,33 @@ import OrderPanel from '../components/OrderPanel';
 import LivePriceTicker from '../components/LivePriceTicker';
 import OrdersTable from '../components/OrdersTable';
 
+/**
+ * DashboardPage - Main trading dashboard layout
+ */
 export default function DashboardPage() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        minHeight: '100vh',
+        background: 'linear-gradient(145deg, #0f2027, #203a43, #2c5364)',
+      }}
+    >
       <Header />
 
-      <Container sx={{ mt: 4 }}>
-        <Grid container spacing={3}>
-          {/* First row: Symbols + Orders */}
+      <Container sx={{ mt: 6, mb: 6 }}>
+        <Grid container spacing={5}>
           <Grid item xs={12} md={6}>
             <SymbolsPanel />
           </Grid>
           <Grid item xs={12} md={6}>
             <OrderPanel />
           </Grid>
-
-          {/* Second row: Live Price Ticker */}
           <Grid item xs={12}>
             <LivePriceTicker />
           </Grid>
-
-          {/* Third row: Orders Table */}
-          <Grid item xs={12}>
-            {/* Pass a default symbol to show its orders */}
-            <OrdersTable symbol="NVDA" />
+          <Grid item xs={12} sx={{ mb: 6 }}>
+            <OrdersTable />
           </Grid>
         </Grid>
       </Container>
