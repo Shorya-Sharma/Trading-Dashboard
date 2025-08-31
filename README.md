@@ -84,7 +84,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 Backend runs at:
 
 * REST APIs → [http://localhost:8000/api](http://localhost:8000/api)
-* WebSocket → `ws://localhost:8000/ws/ticks`
+* WebSocket → [ws://localhost:8000/ws/ticks](ws://localhost:8000/ws/ticks)
 * Docs → [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ### 3. Frontend Setup (React)
