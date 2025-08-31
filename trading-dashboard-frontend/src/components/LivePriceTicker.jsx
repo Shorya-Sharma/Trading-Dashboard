@@ -3,51 +3,61 @@ import { Box, Typography, Paper, Autocomplete, TextField } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { subscribeToTicks } from '../api/ticks';
 import { loadSymbols } from '../store/symbolsSlice';
+import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
+/**
+ * LivePriceTicker displays real-time tick data for a selected symbol
+ * with a sparkline chart and user-friendly time axis.
+ */
 export default function LivePriceTicker() {
   const dispatch = useDispatch();
   const { list: symbols, status } = useSelector(state => state.symbols);
 
-  const [selectedSymbol, setSelectedSymbol] = useState('');
+  const [selectedSymbol, setSelectedSymbol] = useState(null);
   const [tick, setTick] = useState(null);
   const [prevPrice, setPrevPrice] = useState(null);
+  const [tickHistory, setTickHistory] = useState([]);
   const wsRef = useRef(null);
 
-  // ✅ Ensure symbols are fetched if not already
   useEffect(() => {
     if (status === 'idle' || symbols.length === 0) {
       dispatch(loadSymbols());
     }
   }, [status, symbols.length, dispatch]);
 
-  // ✅ Clean up WebSocket on unmount
   useEffect(() => {
     return () => {
       wsRef.current?.close();
     };
   }, []);
 
-  // ✅ Subscribe to ticks when symbol changes
   useEffect(() => {
-    if (selectedSymbol) {
+    if (selectedSymbol?.symbol) {
       wsRef.current?.close();
       wsRef.current = subscribeToTicks(
-        selectedSymbol,
+        selectedSymbol.symbol,
         data => {
           setPrevPrice(tick?.price || null);
           setTick(data);
+          setTickHistory(prev => {
+            const updated = [...prev, data];
+            return updated.slice(-100);
+          });
         },
         err => console.error('Tick error:', err)
       );
+    } else {
+      setTick(null);
+      setTickHistory([]);
     }
   }, [selectedSymbol]);
 
   const priceColor =
     prevPrice && tick
       ? tick.price > prevPrice
-        ? '#00e676' // green if price went up
+        ? '#00e676'
         : tick.price < prevPrice
-          ? '#ff1744' // red if price went down
+          ? '#ff1744'
           : 'white'
       : 'white';
 
@@ -58,13 +68,13 @@ export default function LivePriceTicker() {
         p: 3,
         borderRadius: 4,
         textAlign: 'center',
-        background: 'linear-gradient(145deg, #1e3c72, #2a5298)',
+        background: 'linear-gradient(145deg, #0f2027, #203a43, #2c5364)',
         color: 'white',
-        minHeight: 260,
+        minHeight: 380,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
       }}
     >
       <Typography
@@ -79,9 +89,9 @@ export default function LivePriceTicker() {
         Live Market Ticker
       </Typography>
 
-      {/* Autocomplete Symbol Dropdown */}
       <Autocomplete
-        options={symbols.map(s => s.symbol)}
+        options={symbols}
+        getOptionLabel={option => `${option.symbol} — ${option.name}`}
         value={selectedSymbol}
         onChange={(e, newValue) => setSelectedSymbol(newValue)}
         renderInput={params => (
@@ -105,24 +115,59 @@ export default function LivePriceTicker() {
       />
 
       {tick ? (
-        <Box>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 800,
-              color: priceColor,
-              transition: 'color 0.3s ease',
-            }}
-          >
-            ${tick.price}
-          </Typography>
-          <Typography variant="body2" sx={{ mt: 1, opacity: 0.85 }}>
-            {tick.symbol} | Volume: {tick.volume}
-          </Typography>
-          <Typography variant="caption" sx={{ opacity: 0.6 }}>
-            {new Date(tick.timestamp * 1000).toLocaleTimeString()}
-          </Typography>
-        </Box>
+        <>
+          <Box>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 800,
+                color: priceColor,
+                transition: 'color 0.3s ease',
+              }}
+            >
+              ${tick.price}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1, opacity: 0.85 }}>
+              {tick.symbol} | Volume: {tick.volume}
+            </Typography>
+            <Typography variant="caption" sx={{ opacity: 0.6 }}>
+              {new Date(tick.timestamp * 1000).toLocaleTimeString()}
+            </Typography>
+          </Box>
+
+          <Box sx={{ mt: 3, height: 200 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={tickHistory}>
+                <XAxis
+                  dataKey="timestamp"
+                  tickFormatter={ts => new Date(ts * 1000).toLocaleTimeString()}
+                  tick={{ fill: 'white', fontSize: 10 }}
+                  interval="preserveStartEnd"
+                />
+                <Tooltip
+                  labelFormatter={ts =>
+                    new Date(ts * 1000).toLocaleTimeString()
+                  }
+                  formatter={val => [`$${val}`, 'Price']}
+                  contentStyle={{
+                    backgroundColor: '#1e293b',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: 'white',
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#00f5a0"
+                  strokeWidth={2}
+                  dot={false}
+                  isAnimationActive={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Box>
+        </>
       ) : (
         <Typography
           variant="body2"

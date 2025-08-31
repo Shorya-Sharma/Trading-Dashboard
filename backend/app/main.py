@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import routes_orders, routes_symbols
+from app.api import routes_orders, routes_symbols, routes_ticks
 from app.config import settings
 from app.core.exception_handlers import add_exception_handlers
 
@@ -28,6 +28,7 @@ def create_app() -> FastAPI:
     # Register API routes
     app.include_router(routes_symbols.router, prefix="/api")
     app.include_router(routes_orders.router, prefix="/api")
+    app.include_router(routes_ticks.router)
 
     # Health check
     @app.get("/health", tags=["Health"])

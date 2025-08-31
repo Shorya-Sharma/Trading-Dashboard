@@ -1,11 +1,22 @@
 import apiClient from './apiClient';
 
+/**
+ * Fetch all orders for a given symbol
+ * @param {string} symbol - e.g. "NVDA"
+ * @returns {Promise<Array>} List of orders
+ */
+export async function fetchOrders(symbol) {
+  const res = await apiClient.get(`/orders?symbol=${symbol}`);
+  return res;
+}
+
+/**
+ * Submit a new order
+ * (already used in OrderPage, included for completeness)
+ * @param {object} order - { symbol, side, quantity, price }
+ * @returns {Promise<object>} Created order with ID
+ */
 export async function submitOrder(order) {
-  try {
-    const response = await apiClient.post('/orders', order);
-    return response;
-  } catch (error) {
-    console.error('Failed to submit order:', error);
-    throw error;
-  }
+  const res = await apiClient.post('/orders', order);
+  return res;
 }

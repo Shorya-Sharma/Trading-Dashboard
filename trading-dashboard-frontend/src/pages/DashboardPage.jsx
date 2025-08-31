@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import SymbolsPanel from '../components/SymbolsPanel';
 import OrderPanel from '../components/OrderPanel';
 import LivePriceTicker from '../components/LivePriceTicker';
+import OrdersTable from '../components/OrdersTable';
 
 export default function DashboardPage() {
   return (
@@ -22,6 +23,12 @@ export default function DashboardPage() {
           {/* Second row: Live Price Ticker */}
           <Grid item xs={12}>
             <LivePriceTicker />
+          </Grid>
+
+          {/* Third row: Orders Table */}
+          <Grid item xs={12}>
+            {/* Pass a default symbol to show its orders */}
+            <OrdersTable symbol="NVDA" />
           </Grid>
         </Grid>
       </Container>

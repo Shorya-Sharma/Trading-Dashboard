@@ -187,9 +187,14 @@ export default function OrderPage() {
 
           <Box component="form" noValidate autoComplete="off">
             <Autocomplete
-              options={availableSymbols.map(s => s.symbol)}
-              value={selectedSymbol}
-              onChange={(e, newValue) => handleFieldChange('symbol', newValue)}
+              options={availableSymbols}
+              getOptionLabel={option => `${option.symbol} — ${option.name}`}
+              value={
+                availableSymbols.find(s => s.symbol === selectedSymbol) || null
+              }
+              onChange={(e, newValue) =>
+                handleFieldChange('symbol', newValue ? newValue.symbol : '')
+              }
               onBlur={() => handleFieldBlur('symbol', selectedSymbol)}
               renderInput={params => (
                 <TextField
