@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadSymbols } from '../store/symbolsSlice';
 import {
   Container,
   Typography,
@@ -8,16 +10,16 @@ import {
   CardContent,
 } from '@mui/material';
 import Header from '../components/Header';
-import { fetchSymbols } from '../api/symbols';
 
 export default function SymbolsPage() {
-  const [symbols, setSymbols] = useState([]);
+  const dispatch = useDispatch();
+  const { list: symbols, status } = useSelector(state => state.symbols);
 
   useEffect(() => {
-    fetchSymbols()
-      .then(data => setSymbols(data))
-      .catch(() => setSymbols([]));
-  }, []);
+    if (status === 'idle') {
+      dispatch(loadSymbols());
+    }
+  }, [status, dispatch]);
 
   return (
     <>
