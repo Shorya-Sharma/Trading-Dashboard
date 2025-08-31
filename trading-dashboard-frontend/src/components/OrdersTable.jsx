@@ -11,6 +11,7 @@ import {
   Autocomplete,
   TextField,
   Skeleton,
+  IconButton,
 } from '@mui/material';
 import {
   useReactTable,
@@ -21,6 +22,9 @@ import {
 import { fetchOrders } from '../api/orders';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadSymbols } from '../store/symbolsSlice';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 
 /**
  * OrdersTable allows users to select a symbol and view its orders
@@ -192,7 +196,8 @@ export default function OrdersTable({ defaultSymbol = null }) {
           value={sideFilter}
           exclusive
           onChange={(e, val) => {
-            if (val !== null) setSideFilter(val);
+            // Fix: Handle null case properly - keep current selection if null
+            setSideFilter(val !== null ? val : sideFilter);
           }}
           size="small"
         >
@@ -285,6 +290,7 @@ export default function OrdersTable({ defaultSymbol = null }) {
                       cursor: 'pointer',
                       fontWeight: 700,
                       color: '#e2e8f0',
+                      '&:hover': { background: 'rgba(255,255,255,0.1)' },
                     },
                   }}
                 >
@@ -294,14 +300,20 @@ export default function OrdersTable({ defaultSymbol = null }) {
                       key={header.id}
                       onClick={header.column.getToggleSortingHandler()}
                     >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {{
-                        asc: ' 🔼',
-                        desc: ' 🔽',
-                      }[header.column.getIsSorted()] ?? null}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        <IconButton size="small" sx={{ color: 'inherit' }}>
+                          {{
+                            asc: <ArrowUpwardIcon fontSize="small" />,
+                            desc: <ArrowDownwardIcon fontSize="small" />,
+                          }[header.column.getIsSorted()] ?? (
+                            <UnfoldMoreIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </Box>
                     </Box>
                   ))}
                 </Box>
