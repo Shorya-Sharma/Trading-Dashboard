@@ -1,18 +1,21 @@
-import json
 from typing import List
+from fastapi import APIRouter, Depends, HTTPException
 
-from fastapi import APIRouter
-
-from app.config import settings
-from app.models.symbol import Symbol
+from app.services.symbol_service import SymbolService
+from app.dto.symbol_response import SymbolResponse
 
 router = APIRouter()
 
-# Load symbols once
-with open(settings.SYMBOLS_FILE, "r") as f:
-    SYMBOLS = [Symbol(**s) for s in json.load(f)]
+
+def get_symbol_service() -> SymbolService:
+    return SymbolService()
 
 
-@router.get("/symbols", response_model=List[Symbol])
-async def get_symbols():
-    return SYMBOLS
+@router.get("/symbols", response_model=List[SymbolResponse], summary="Get all symbols")
+async def get_symbols(service: SymbolService = Depends(get_symbol_service)):
+    try:
+        return service.get_all_symbols()
+    except FileNotFoundError:
+        raise HTTPException(status_code=500, detail="Symbols file not found")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to load symbols")
