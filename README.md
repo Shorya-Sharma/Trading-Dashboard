@@ -58,7 +58,7 @@ trading-dashboard/
 ### 1. Clone Repo
 
 ```bash
-git clone https://github.com/your-username/trading-dashboard.git
+git clone https://github.com/shorya-sharma/trading-dashboard.git
 cd trading-dashboard
 ```
 
