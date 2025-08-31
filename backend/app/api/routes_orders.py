@@ -1,15 +1,18 @@
 from typing import List
+import logging
 from fastapi import APIRouter, Depends, Query, HTTPException
+
 from app.models.order import OrderResponse, OrderCreateRequest
 from app.repositories.order_repository import OrderRepository
 from app.services.order_service import OrderService
 from app.services.symbol_service import SymbolService
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
 
 
 def get_order_service() -> OrderService:
-    """Provide an instance of OrderService with repository and symbols."""
     symbol_service = SymbolService()
     symbols = symbol_service.get_all_symbols()
     return OrderService(OrderRepository(), symbols)
@@ -23,8 +26,10 @@ async def create_order(
     try:
         return service.create_order(request)
     except HTTPException as e:
+        logger.warning(f"Order validation failed: {e.detail}")
         raise e
     except Exception as e:
+        logger.error(f"Unexpected error while creating order: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to create order: {str(e)}")
 
 
@@ -39,6 +44,8 @@ async def list_orders(
     try:
         return service.list_orders(symbol)
     except HTTPException as e:
+        logger.warning(f"Invalid request for orders: {e.detail}")
         raise e
-    except Exception:
-        raise HTTPException(status_code=500, detail="Failed to fetch orders")
+    except Exception as e:
+        logger.error(f"Unexpected error while fetching orders: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to fetch orders: {str(e)}")

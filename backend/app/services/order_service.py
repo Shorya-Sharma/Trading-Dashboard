@@ -1,8 +1,11 @@
 import time
+import logging
 from fastapi import HTTPException
 from app.models.order import OrderCreateRequest, OrderResponse
 from app.models.symbol import Symbol
 from app.repositories.order_repository import OrderRepository
+
+logger = logging.getLogger(__name__)
 
 
 class OrderService:
@@ -13,8 +16,8 @@ class OrderService:
         self.symbols = {s.symbol: s for s in symbols}
 
     def _validate_order(self, request: OrderCreateRequest) -> OrderResponse:
-        """Ensure the order is valid before creation."""
         if request.symbol not in self.symbols:
+            logger.warning(f"Invalid symbol: {request.symbol}")
             raise HTTPException(status_code=400, detail="Invalid symbol")
 
         symbol_meta = self.symbols[request.symbol]
@@ -24,13 +27,12 @@ class OrderService:
         )
 
         if not (min_price <= request.price <= max_price):
-            raise HTTPException(
-                status_code=400,
-                detail=(
-                    f"Price must be within ±20% of {symbol_meta.symbol} closePrice "
-                    f"(allowed: {min_price:.2f} to {max_price:.2f})"
-                ),
+            msg = (
+                f"Price {request.price} out of range for {request.symbol} "
+                f"(allowed: {min_price:.2f} - {max_price:.2f})"
             )
+            logger.warning(msg)
+            raise HTTPException(status_code=400, detail=msg)
 
         return OrderResponse(
             id=int(time.time() * 1000),
@@ -42,13 +44,23 @@ class OrderService:
         )
 
     def create_order(self, request: OrderCreateRequest) -> OrderResponse:
-        """Validate and persist a new order."""
         order = self._validate_order(request)
-        self.repository.save_order(order)
-        return order
+        try:
+            self.repository.save_order(order)
+            logger.info(f"Order created successfully: {order.dict()}")
+            return order
+        except Exception as e:
+            logger.error(f"Error saving order: {e}", exc_info=True)
+            raise
 
     def list_orders(self, symbol: str) -> list[OrderResponse]:
-        """Retrieve all orders for a given symbol."""
         if symbol not in self.symbols:
+            logger.warning(f"Invalid symbol for listing orders: {symbol}")
             raise HTTPException(status_code=400, detail="Invalid symbol")
-        return self.repository.load_orders(symbol)
+        try:
+            orders = self.repository.load_orders(symbol)
+            logger.info(f"Fetched {len(orders)} orders for symbol {symbol}")
+            return orders
+        except Exception as e:
+            logger.error(f"Error loading orders for {symbol}: {e}", exc_info=True)
+            raise

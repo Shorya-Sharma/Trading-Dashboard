@@ -1,8 +1,11 @@
 import json
 import os
+import logging
 from typing import List
 from app.config import settings
 from app.models.order import OrderResponse
+
+logger = logging.getLogger(__name__)
 
 
 class OrderRepository:
@@ -16,20 +19,32 @@ class OrderRepository:
         return os.path.join(self.orders_dir, f"{symbol}.json")
 
     def load_orders(self, symbol: str) -> List[OrderResponse]:
-        """Load all orders for a given symbol."""
         file_path = self._file_path(symbol)
         if not os.path.exists(file_path):
+            logger.info(f"No orders file found for {symbol}, returning empty list")
             return []
-        with open(file_path, "r") as f:
-            return [OrderResponse(**o) for o in json.load(f)]
+        try:
+            with open(file_path, "r") as f:
+                data = json.load(f)
+                logger.debug(f"Loaded {len(data)} orders from {file_path}")
+                return [OrderResponse(**o) for o in data]
+        except Exception as e:
+            logger.error(f"Failed to load orders from {file_path}: {e}", exc_info=True)
+            raise
 
     def save_order(self, order: OrderResponse):
-        """Append a new order to the file for its symbol."""
         file_path = self._file_path(order.symbol)
-        orders = []
-        if os.path.exists(file_path):
-            with open(file_path, "r") as f:
-                orders = json.load(f)
-        orders.append(order.dict())
-        with open(file_path, "w") as f:
-            json.dump(orders, f, indent=2)
+        try:
+            orders = []
+            if os.path.exists(file_path):
+                with open(file_path, "r") as f:
+                    orders = json.load(f)
+            orders.append(order.dict())
+            with open(file_path, "w") as f:
+                json.dump(orders, f, indent=2)
+            logger.debug(f"Saved order {order.id} to {file_path}")
+        except Exception as e:
+            logger.error(
+                f"Failed to save order {order.id} to {file_path}: {e}", exc_info=True
+            )
+            raise
