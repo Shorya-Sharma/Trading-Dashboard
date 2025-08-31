@@ -4,8 +4,6 @@ import {
   Button,
   Paper,
   Typography,
-  ToggleButton,
-  ToggleButtonGroup,
   Switch,
   FormControlLabel,
   Autocomplete,
@@ -28,7 +26,7 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 
 /**
  * OrdersTable allows users to select a symbol and view its orders
- * with sorting, filtering, refresh, live mode, and skeleton loading.
+ * with sorting, refresh, live mode, and skeleton loading.
  */
 export default function OrdersTable({ defaultSymbol = null }) {
   const dispatch = useDispatch();
@@ -36,7 +34,6 @@ export default function OrdersTable({ defaultSymbol = null }) {
 
   const [selectedSymbol, setSelectedSymbol] = useState(defaultSymbol);
   const [orders, setOrders] = useState([]);
-  const [sideFilter, setSideFilter] = useState('ALL');
   const [liveMode, setLiveMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sorting, setSorting] = useState([]);
@@ -73,9 +70,6 @@ export default function OrdersTable({ defaultSymbol = null }) {
     }, 5000);
     return () => clearInterval(interval);
   }, [liveMode, selectedSymbol]);
-
-  const filteredOrders =
-    sideFilter === 'ALL' ? orders : orders.filter(o => o.side === sideFilter);
 
   const columns = [
     { header: 'ID', accessorKey: 'id' },
@@ -117,7 +111,7 @@ export default function OrdersTable({ defaultSymbol = null }) {
   ];
 
   const table = useReactTable({
-    data: filteredOrders,
+    data: orders,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -192,59 +186,37 @@ export default function OrdersTable({ defaultSymbol = null }) {
           flexWrap: 'wrap',
         }}
       >
-        <ToggleButtonGroup
-          value={sideFilter}
-          exclusive
-          onChange={(e, val) => {
-            // Fix: Handle null case properly - keep current selection if null
-            setSideFilter(val !== null ? val : sideFilter);
-          }}
+        <Button
+          variant="outlined"
           size="small"
+          onClick={loadOrders}
+          disabled={!selectedSymbol}
+          sx={{
+            borderColor: '#00f5a0',
+            color: '#00f5a0',
+            '&:hover': {
+              borderColor: '#00c6ff',
+              background: 'rgba(0, 198, 255, 0.1)',
+            },
+          }}
         >
-          <ToggleButton value="ALL" sx={{ color: 'white' }}>
-            All
-          </ToggleButton>
-          <ToggleButton value="BUY" sx={{ color: '#00e676' }}>
-            Buy
-          </ToggleButton>
-          <ToggleButton value="SELL" sx={{ color: '#ff1744' }}>
-            Sell
-          </ToggleButton>
-        </ToggleButtonGroup>
+          Refresh
+        </Button>
 
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={loadOrders}
-            disabled={!selectedSymbol}
-            sx={{
-              borderColor: '#00f5a0',
-              color: '#00f5a0',
-              '&:hover': {
-                borderColor: '#00c6ff',
-                background: 'rgba(0, 198, 255, 0.1)',
-              },
-            }}
-          >
-            Refresh
-          </Button>
-
-          <FormControlLabel
-            control={
-              <Switch
-                checked={liveMode}
-                onChange={e => setLiveMode(e.target.checked)}
-                sx={{
-                  '& .MuiSwitch-thumb': { backgroundColor: '#00f5a0' },
-                  '& .Mui-checked': { color: '#00f5a0' },
-                }}
-              />
-            }
-            label="Live Mode"
-            sx={{ color: 'white' }}
-          />
-        </Box>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={liveMode}
+              onChange={e => setLiveMode(e.target.checked)}
+              sx={{
+                '& .MuiSwitch-thumb': { backgroundColor: '#00f5a0' },
+                '& .Mui-checked': { color: '#00f5a0' },
+              }}
+            />
+          }
+          label="Live Mode"
+          sx={{ color: 'white' }}
+        />
       </Box>
 
       {/* Table */}
