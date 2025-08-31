@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import DashboardPage from './pages/DashboardPage';
 import SymbolsPage from './pages/SymbolsPage';
 import OrderPage from './pages/OrderPage';
+import Notification from './components/Notification';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/symbols" element={<SymbolsPage />} />
         <Route path="/order" element={<OrderPage />} />
       </Routes>
+      <Notification />
     </Router>
   );
 }

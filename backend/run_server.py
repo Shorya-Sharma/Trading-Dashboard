@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Simple launcher script for the FastAPI backend server.
-Double-click this file or run it to start the server.
+Launcher script for the FastAPI backend server.
+Run this file to start the development server.
 """
 
 import os
@@ -10,10 +10,10 @@ import sys
 
 
 def main():
-    print("🚀 Starting Trading Dashboard Backend...")
-    print("📍 Server will be available at: http://localhost:8000")
-    print("📚 API docs will be at: http://localhost:8000/docs")
-    print("⏹️  Press Ctrl+C to stop the server")
+    print("Starting Trading Dashboard Backend...")
+    print("Server will be available at: http://localhost:8000")
+    print("API docs will be at: http://localhost:8000/docs")
+    print("Press Ctrl+C to stop the server")
     print("-" * 50)
 
     try:
@@ -36,9 +36,9 @@ def main():
             ]
         )
     except KeyboardInterrupt:
-        print("\n🛑 Server stopped by user")
+        print("\nServer stopped by user")
     except Exception as e:
-        print(f"❌ Error starting server: {e}")
+        print(f"Error starting server: {e}")
         input("Press Enter to exit...")
 
 

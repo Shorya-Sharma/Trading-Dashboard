@@ -15,30 +15,121 @@ import {
 } from '@mui/material';
 import Header from '../components/Header';
 import { submitOrder } from '../api/orders';
+import { showNotification, NotificationType } from '../store/notificationSlice';
 
+/**
+ * OrderPage allows users to place BUY/SELL orders for a selected symbol
+ * with quantity and price inputs. Includes validation with live updates
+ * after a field has been touched and ensures all fields validate on submit.
+ */
 export default function OrderPage() {
   const dispatch = useDispatch();
-  const { list: symbols, status } = useSelector(state => state.symbols);
+  const { list: availableSymbols, status: symbolsStatus } = useSelector(
+    state => state.symbols
+  );
 
-  const [symbol, setSymbol] = useState('');
-  const [side, setSide] = useState('BUY');
-  const [qty, setQty] = useState('');
-  const [price, setPrice] = useState('');
-  const [message, setMessage] = useState('');
+  const [selectedSymbol, setSelectedSymbol] = useState('');
+  const [orderSide, setOrderSide] = useState('BUY');
+  const [quantity, setQuantity] = useState('');
+  const [orderPrice, setOrderPrice] = useState('');
+
+  const [fieldErrors, setFieldErrors] = useState({
+    symbol: '',
+    quantity: '',
+    price: '',
+  });
+
+  const [fieldTouched, setFieldTouched] = useState({
+    symbol: false,
+    quantity: false,
+    price: false,
+  });
 
   useEffect(() => {
-    if (status === 'idle') {
+    if (symbolsStatus === 'idle') {
       dispatch(loadSymbols());
     }
-  }, [status, dispatch]);
+  }, [symbolsStatus, dispatch]);
 
-  const handleSubmit = async () => {
+  const validateField = (fieldName, value) => {
+    switch (fieldName) {
+      case 'symbol':
+        return !value ? 'Symbol is required' : '';
+      case 'quantity':
+        return !value || Number(value) <= 0
+          ? 'Quantity must be greater than 0'
+          : '';
+      case 'price':
+        return !value || Number(value) <= 0
+          ? 'Price must be greater than 0'
+          : '';
+      default:
+        return '';
+    }
+  };
+
+  const validateAllFields = () => {
+    const newErrors = {
+      symbol: validateField('symbol', selectedSymbol),
+      quantity: validateField('quantity', quantity),
+      price: validateField('price', orderPrice),
+    };
+    setFieldErrors(newErrors);
+    return Object.values(newErrors).every(error => error === '');
+  };
+
+  const handleFieldBlur = (field, value) => {
+    setFieldTouched(prev => ({ ...prev, [field]: true }));
+    setFieldErrors(prev => ({ ...prev, [field]: validateField(field, value) }));
+  };
+
+  const handleFieldChange = (field, value) => {
+    if (field === 'symbol') setSelectedSymbol(value);
+    if (field === 'quantity') setQuantity(value);
+    if (field === 'price') setOrderPrice(value);
+
+    if (fieldTouched[field]) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [field]: validateField(field, value),
+      }));
+    }
+  };
+
+  const handleSubmitOrder = async () => {
+    setFieldTouched({ symbol: true, quantity: true, price: true });
+
+    if (!validateAllFields()) return;
+
     try {
-      const order = { symbol, side, qty: Number(qty), price: Number(price) };
-      const res = await submitOrder(order);
-      setMessage(`Order placed successfully! ID: ${res.id}`);
+      const order = {
+        symbol: selectedSymbol,
+        side: orderSide,
+        qty: Number(quantity),
+        price: Number(orderPrice),
+      };
+
+      const response = await submitOrder(order);
+
+      dispatch(
+        showNotification({
+          message: `Order placed successfully! ID: ${response.id}`,
+          type: NotificationType.SUCCESS,
+        })
+      );
+
+      setSelectedSymbol('');
+      setQuantity('');
+      setOrderPrice('');
+      setFieldErrors({ symbol: '', quantity: '', price: '' });
+      setFieldTouched({ symbol: false, quantity: false, price: false });
     } catch (error) {
-      setMessage(error.response?.data?.error || 'Error placing order');
+      dispatch(
+        showNotification({
+          message: error.response?.data?.error || 'Error placing order',
+          type: NotificationType.ERROR,
+        })
+      );
     }
   };
 
@@ -63,23 +154,26 @@ export default function OrderPage() {
 
           <Box component="form" noValidate autoComplete="off">
             <Autocomplete
-              options={symbols.map(s => s.symbol)}
-              value={symbol}
-              onChange={(e, newValue) => setSymbol(newValue)}
+              options={availableSymbols.map(s => s.symbol)}
+              value={selectedSymbol}
+              onChange={(e, newValue) => handleFieldChange('symbol', newValue)}
+              onBlur={() => handleFieldBlur('symbol', selectedSymbol)}
               renderInput={params => (
                 <TextField
                   {...params}
                   label="Symbol"
                   placeholder="Select a symbol"
+                  error={fieldTouched.symbol && !!fieldErrors.symbol}
+                  helperText={fieldTouched.symbol && fieldErrors.symbol}
                 />
               )}
               sx={{ mb: 3 }}
             />
 
             <ToggleButtonGroup
-              value={side}
+              value={orderSide}
               exclusive
-              onChange={(e, newSide) => newSide && setSide(newSide)}
+              onChange={(e, newSide) => newSide && setOrderSide(newSide)}
               sx={{ mb: 3, width: '100%' }}
             >
               <ToggleButton
@@ -100,8 +194,11 @@ export default function OrderPage() {
               label="Quantity"
               type="number"
               fullWidth
-              value={qty}
-              onChange={e => setQty(e.target.value)}
+              value={quantity}
+              onChange={e => handleFieldChange('quantity', e.target.value)}
+              onBlur={() => handleFieldBlur('quantity', quantity)}
+              error={fieldTouched.quantity && !!fieldErrors.quantity}
+              helperText={fieldTouched.quantity && fieldErrors.quantity}
               sx={{ mb: 3 }}
             />
 
@@ -109,26 +206,30 @@ export default function OrderPage() {
               label="Price"
               type="number"
               fullWidth
-              value={price}
-              onChange={e => setPrice(e.target.value)}
+              value={orderPrice}
+              onChange={e => handleFieldChange('price', e.target.value)}
+              onBlur={() => handleFieldBlur('price', orderPrice)}
+              error={fieldTouched.price && !!fieldErrors.price}
+              helperText={fieldTouched.price && fieldErrors.price}
               sx={{ mb: 4 }}
             />
 
             <Button
               variant="contained"
               fullWidth
-              onClick={handleSubmit}
-              sx={{ py: 1.5, fontWeight: 700 }}
+              onClick={handleSubmitOrder}
+              sx={{
+                py: 1.5,
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #00c6ff, #0072ff)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #0072ff, #00c6ff)',
+                },
+              }}
             >
               Submit Order
             </Button>
           </Box>
-
-          {message && (
-            <Typography variant="body1" sx={{ mt: 4, fontWeight: 600 }}>
-              {message}
-            </Typography>
-          )}
         </Paper>
       </Container>
     </>
