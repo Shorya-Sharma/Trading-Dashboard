@@ -163,6 +163,106 @@ pytest tests/ --cov=app.services.order_service -v
 
 ---
 
+### 5. Docker Compose Setup
+
+For containerized deployment using Docker:
+
+#### Prerequisites
+
+- Docker and Docker Compose installed on your system
+
+#### Quick Start with Docker
+
+```bash
+# Build and start all services
+docker-compose up --build
+
+# Run in detached mode (background)
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+```
+
+#### Docker Services
+
+**Backend Container:**
+
+- FastAPI application running on port 8000
+- Health checks every 30 seconds
+- Persistent volume for orders data
+- Environment variables for CORS and file paths
+
+**Frontend Container:**
+
+- React application served by Nginx on port 3000
+- Multi-stage build for optimized production image
+- Health checks every 30 seconds
+- Configured to communicate with backend
+
+#### Docker URLs
+
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend API: [http://localhost:8000/api](http://localhost:8000/api)
+- API Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+- WebSocket: [ws://localhost:8000/ws/ticks](ws://localhost:8000/ws/ticks)
+
+#### Docker Commands
+
+```bash
+# Start services
+docker-compose up
+
+# Start in background
+docker-compose up -d
+
+# View running containers
+docker-compose ps
+
+# View logs
+docker-compose logs backend
+docker-compose logs frontend
+
+# Stop services
+docker-compose down
+
+# Remove volumes (clears data)
+docker-compose down -v
+
+# Rebuild and start
+docker-compose up --build
+
+# Scale services (if needed)
+docker-compose up --scale backend=2
+```
+
+#### Docker Environment Variables
+
+**Backend Environment:**
+
+- `CORS_ALLOWED_ORIGINS`: Allowed origins for CORS
+- `ORDERS_DIR`: Directory for order data storage
+- `SYMBOLS_FILE`: Path to symbols configuration file
+
+**Frontend Environment:**
+
+- `REACT_APP_API_BASE_URL`: Backend API URL
+- `REACT_APP_WS_BASE_URL`: WebSocket URL for live ticks
+
+#### Docker Volumes
+
+- `orders_data`: Persistent storage for order data
+- `./backend/symbols.json`: Read-only mount of symbols configuration
+
+#### Docker Networks
+
+- `trading-network`: Internal network for service communication
+
+---
+
 ## 🔌 API Usage Examples
 
 ### 1. Health Check
