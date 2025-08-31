@@ -1,6 +1,7 @@
 import DashboardPage from '../pages/DashboardPage';
 import SymbolsPage from '../pages/SymbolsPage';
 import CreateOrderPage from '../pages/CreateOrderPage';
+import OrdersTablePage from '../pages/OrdersTablePage';
 
 // Route configuration object
 export const ROUTES = {
@@ -22,10 +23,18 @@ export const ROUTES = {
 
   // Order creation route
   CREATE_ORDER: {
-    path: '/order',
+    path: '/create-order',
     element: CreateOrderPage,
     label: 'Create Order',
     description: 'Create new trading orders',
+  },
+
+  // Orders Table route
+  ORDERS_TABLE: {
+    path: '/orders-table',
+    element: OrdersTablePage,
+    label: 'Orders Table',
+    description: 'View and manage all orders in a tabular format',
   },
 };
 

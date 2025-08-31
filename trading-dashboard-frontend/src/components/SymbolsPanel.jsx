@@ -7,11 +7,12 @@ import {
 } from '@mui/material';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../config/routes';
 
 /**
  * SymbolsPanel component.
  * - Displays a styled card with a chart icon
- * - Navigates to the "/symbols" page when clicked
+ * - Navigates to the Symbols route when clicked (from ROUTES config)
  */
 export default function SymbolsPanel() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function SymbolsPanel() {
       }}
     >
       <CardActionArea
-        onClick={() => navigate('/symbols')}
+        onClick={() => navigate(ROUTES.SYMBOLS.path)}
         sx={{
           height: '100%',
           display: 'flex',
@@ -45,10 +46,10 @@ export default function SymbolsPanel() {
             <ShowChartIcon sx={{ fontSize: 48, color: 'white' }} />
           </Box>
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Tradeable Symbols
+            {ROUTES.SYMBOLS.label}
           </Typography>
           <Typography variant="body2" sx={{ opacity: 0.8, mt: 1 }}>
-            Browse and select market symbols
+            {ROUTES.SYMBOLS.description}
           </Typography>
         </CardContent>
       </CardActionArea>
