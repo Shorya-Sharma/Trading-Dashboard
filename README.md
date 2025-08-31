@@ -9,20 +9,20 @@ It supports **live market ticks via WebSocket**, symbol management, order creati
 
 ### **Frontend (React + Material UI)**
 
-* Dark, modern trading dashboard UI.
-* **Symbols Panel** → View and manage tradeable symbols.
-* **Order Panel** → Place new BUY/SELL orders with validations.
-* **Live Price Ticker** → Real-time tick updates via WebSocket with sparkline chart.
-* **Orders Table** → Sorting, filtering, manual refresh, and live auto-refresh.
-* Built with **React 18, Redux Toolkit, Material UI 5, TanStack Table, Recharts**.
+- Dark, modern trading dashboard UI.
+- **Symbols Panel** → View and manage tradeable symbols.
+- **Order Panel** → Place new BUY/SELL orders with validations.
+- **Live Price Ticker** → Real-time tick updates via WebSocket with sparkline chart.
+- **Orders Table** → Sorting, filtering, manual refresh, and live auto-refresh.
+- Built with **React 18, Redux Toolkit, Material UI 5, TanStack Table, Recharts**.
 
 ### **Backend (FastAPI + Python)**
 
-* REST APIs for symbols and orders.
-* WebSocket API for live ticks (`/ws/ticks`).
-* Symbol and order persistence via JSON files.
-* Tick simulation service (±5% random price variation).
-* Configurable via environment variables.
+- REST APIs for symbols and orders.
+- WebSocket API for live ticks (`/ws/ticks`).
+- Symbol and order persistence via JSON files.
+- Tick simulation service (±5% random price variation).
+- Configurable via environment variables.
 
 ---
 
@@ -62,7 +62,36 @@ git clone https://github.com/shorya-sharma/trading-dashboard.git
 cd trading-dashboard
 ```
 
-### 2. Backend Setup (FastAPI)
+### 2. Quick Start (Recommended)
+
+Use the automated startup script to set up and run both backend and frontend:
+
+```bash
+./start_trading_dashboard.sh
+```
+
+This script will:
+
+- Check for required dependencies (Python 3.7+, Node.js, npm)
+- Set up Python virtual environment and install backend dependencies
+- Install frontend npm dependencies
+- Start both backend and frontend servers
+- Provide URLs for accessing the application
+
+**URLs after startup:**
+
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend API: [http://localhost:8000/api](http://localhost:8000/api)
+- API Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+- WebSocket: [ws://localhost:8000/ws/ticks](ws://localhost:8000/ws/ticks)
+
+**To stop all servers:** Press `Ctrl+C`
+
+---
+
+### 3. Manual Setup (Alternative)
+
+#### Backend Setup (FastAPI)
 
 ```bash
 cd backend
@@ -83,11 +112,11 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 Backend runs at:
 
-* REST APIs → [http://localhost:8000/api](http://localhost:8000/api)
-* WebSocket → [ws://localhost:8000/ws/ticks](ws://localhost:8000/ws/ticks)
-* Docs → [http://localhost:8000/docs](http://localhost:8000/docs)
+- REST APIs → [http://localhost:8000/api](http://localhost:8000/api)
+- WebSocket → [ws://localhost:8000/ws/ticks](ws://localhost:8000/ws/ticks)
+- Docs → [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### 3. Frontend Setup (React)
+#### Frontend Setup (React)
 
 ```bash
 cd trading-dashboard-frontend
@@ -97,6 +126,40 @@ npm start
 
 Frontend runs at:
 👉 [http://localhost:3000](http://localhost:3000)
+
+---
+
+### 4. Running Backend Tests
+
+To run the backend test suite with coverage reporting:
+
+```bash
+cd backend
+python run_tests.py
+```
+
+This will:
+
+- Install test dependencies (`pytest`, `pytest-cov`, `pytest-mock`, `pytest-asyncio`)
+- Run all tests with verbose output
+- Generate coverage reports (terminal and HTML)
+- Show missing lines in coverage
+
+**Test Coverage Report:**
+
+- Terminal output shows coverage summary
+- HTML report generated in `backend/htmlcov/` directory
+- Open `backend/htmlcov/index.html` in browser for detailed coverage
+
+**Individual Test Files:**
+
+```bash
+# Run specific test file
+pytest tests/test_order_service.py -v
+
+# Run with coverage for specific module
+pytest tests/ --cov=app.services.order_service -v
+```
 
 ---
 
@@ -128,8 +191,18 @@ Response:
 
 ```json
 [
-  { "symbol": "AAPL", "name": "Apple Inc.", "market": "NASDAQ", "close_price": 150 },
-  { "symbol": "NVDA", "name": "NVIDIA Corp.", "market": "NASDAQ", "close_price": 700 }
+  {
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "market": "NASDAQ",
+    "close_price": 150
+  },
+  {
+    "symbol": "NVDA",
+    "name": "NVIDIA Corp.",
+    "market": "NASDAQ",
+    "close_price": 700
+  }
 ]
 ```
 
@@ -226,19 +299,19 @@ ws://localhost:8000/ws/ticks
 
 ## 🎨 Frontend Pages
 
-* **DashboardPage** → Landing dashboard with panels for Symbols, Orders, Order Book, and Live Ticker.
-* **SymbolsPage** → Manage trading symbols.
-* **CreateOrderPage** → Place BUY/SELL orders with validation.
-* **OrdersTablePage** → Detailed order book with sorting/filtering/auto-refresh.
-* **LivePriceTicker** → Real-time ticker with sparkline chart.
+- **DashboardPage** → Landing dashboard with panels for Symbols, Orders, Order Book, and Live Ticker.
+- **SymbolsPage** → Manage trading symbols.
+- **CreateOrderPage** → Place BUY/SELL orders with validation.
+- **OrdersTablePage** → Detailed order book with sorting/filtering/auto-refresh.
+- **LivePriceTicker** → Real-time ticker with sparkline chart.
 
 ---
 
 ## 🔧 Tech Stack
 
-* **Frontend**: React 18, Redux Toolkit, Material UI 5, TanStack Table, Recharts, Axios
-* **Backend**: FastAPI, Python 3.10+, Uvicorn
-* **Communication**: REST + WebSocket
+- **Frontend**: React 18, Redux Toolkit, Material UI 5, TanStack Table, Recharts, Axios
+- **Backend**: FastAPI, Python 3.10+, Uvicorn
+- **Communication**: REST + WebSocket
 
 ---
 
