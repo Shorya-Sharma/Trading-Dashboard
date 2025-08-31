@@ -19,8 +19,7 @@ import { showNotification, NotificationType } from '../store/notificationSlice';
 
 /**
  * OrderPage allows users to place BUY/SELL orders for a selected symbol
- * with quantity and price inputs. Includes validation with live updates
- * after a field has been touched and ensures all fields validate on submit.
+ * with quantity and price inputs, including ±20% closePrice validation.
  */
 export default function OrderPage() {
   const dispatch = useDispatch();
@@ -96,16 +95,50 @@ export default function OrderPage() {
     }
   };
 
+  const getPriceRangeHelper = () => {
+    const symbolMeta = availableSymbols.find(s => s.symbol === selectedSymbol);
+    if (!symbolMeta) return '';
+    const minPrice = (symbolMeta.close_price * 0.8).toFixed(2);
+    const maxPrice = (symbolMeta.close_price * 1.2).toFixed(2);
+    return `Allowed range: ${minPrice} - ${maxPrice}`;
+  };
+
   const handleSubmitOrder = async () => {
     setFieldTouched({ symbol: true, quantity: true, price: true });
 
     if (!validateAllFields()) return;
 
+    const symbolMeta = availableSymbols.find(s => s.symbol === selectedSymbol);
+    if (!symbolMeta) {
+      dispatch(
+        showNotification({
+          message: 'Invalid symbol selected',
+          type: NotificationType.ERROR,
+        })
+      );
+      return;
+    }
+
+    const minPrice = symbolMeta.close_price * 0.8;
+    const maxPrice = symbolMeta.close_price * 1.2;
+
+    if (Number(orderPrice) < minPrice || Number(orderPrice) > maxPrice) {
+      dispatch(
+        showNotification({
+          message: `Price must be within ±20% of ${selectedSymbol} closePrice (allowed: ${minPrice.toFixed(
+            2
+          )} - ${maxPrice.toFixed(2)})`,
+          type: NotificationType.ERROR,
+        })
+      );
+      return;
+    }
+
     try {
       const order = {
         symbol: selectedSymbol,
         side: orderSide,
-        qty: Number(quantity),
+        quantity: Number(quantity),
         price: Number(orderPrice),
       };
 
@@ -210,7 +243,10 @@ export default function OrderPage() {
               onChange={e => handleFieldChange('price', e.target.value)}
               onBlur={() => handleFieldBlur('price', orderPrice)}
               error={fieldTouched.price && !!fieldErrors.price}
-              helperText={fieldTouched.price && fieldErrors.price}
+              helperText={
+                (fieldTouched.price && fieldErrors.price) ||
+                getPriceRangeHelper()
+              }
               sx={{ mb: 4 }}
             />
 
