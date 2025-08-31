@@ -18,10 +18,10 @@ import { submitOrder } from '../api/orders';
 import { showNotification, NotificationType } from '../store/notificationSlice';
 
 /**
- * OrderPage allows users to place BUY/SELL orders for a selected symbol
+ * CreateOrderPage allows users to place BUY/SELL orders for a selected symbol
  * with quantity and price inputs, including ±20% closePrice validation.
  */
-export default function OrderPage() {
+export default function CreateOrderPage() {
   const dispatch = useDispatch();
   const { list: availableSymbols, status: symbolsStatus } = useSelector(
     state => state.symbols

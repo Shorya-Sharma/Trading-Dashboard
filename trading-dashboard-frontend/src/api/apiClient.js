@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/config';
 
 // Create a reusable Axios client with base URL and default headers
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: API_CONFIG.BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

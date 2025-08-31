@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
+import { getRouteLabels } from '../config/routes';
+import { APP_CONFIG } from '../config/config';
 
 /**
  * Header component with navigation drawer.
@@ -26,11 +28,7 @@ export default function Header() {
     setOpen(!open);
   };
 
-  const menuItems = [
-    { text: 'Dashboard', path: '/' },
-    { text: 'Symbols', path: '/symbols' },
-    { text: 'Orders', path: '/order' },
-  ];
+  const menuItems = getRouteLabels();
 
   return (
     <>
@@ -51,7 +49,7 @@ export default function Header() {
             </IconButton>
             <Typography
               variant="h5"
-              onClick={() => navigate('/')}
+              onClick={() => navigate(APP_CONFIG.DEFAULT_ROUTE)}
               sx={{
                 fontWeight: 800,
                 letterSpacing: 1,
@@ -62,7 +60,7 @@ export default function Header() {
                 '&:hover': { opacity: 0.8 },
               }}
             >
-              Trading Dashboard
+              {APP_CONFIG.TITLE}
             </Typography>
           </Box>
         </Toolbar>
@@ -74,8 +72,8 @@ export default function Header() {
         open={open}
         sx={{
           '& .MuiDrawer-paper': {
-            marginTop: '80px',
-            width: 240,
+            marginTop: `${APP_CONFIG.NAVIGATION.HEADER_HEIGHT}px`,
+            width: APP_CONFIG.NAVIGATION.DRAWER_WIDTH,
             background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
             color: 'white',
             border: 'none',
@@ -86,7 +84,7 @@ export default function Header() {
           {menuItems.map(item => (
             <ListItem
               button
-              key={item.text}
+              key={item.label}
               onClick={() => {
                 navigate(item.path);
                 setOpen(false);
@@ -98,7 +96,7 @@ export default function Header() {
               }}
             >
               <ListItemText
-                primary={item.text}
+                primary={item.label}
                 primaryTypographyProps={{ fontWeight: 600 }}
               />
             </ListItem>

@@ -1,7 +1,7 @@
 import { Container, Box, Grid } from '@mui/material';
 import Header from '../components/Header';
 import SymbolsPanel from '../components/SymbolsPanel';
-import OrderPanel from '../components/OrderPanel';
+import CreateOrderPanel from '../components/CreateOrderPanel';
 import LivePriceTicker from '../components/LivePriceTicker';
 import OrdersTable from '../components/OrdersTable';
 
@@ -25,7 +25,7 @@ export default function DashboardPage() {
             <SymbolsPanel />
           </Grid>
           <Grid item xs={12} md={6}>
-            <OrderPanel />
+            <CreateOrderPanel />
           </Grid>
           <Grid item xs={12}>
             <LivePriceTicker />

@@ -1,16 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import DashboardPage from './pages/DashboardPage';
-import SymbolsPage from './pages/SymbolsPage';
-import OrderPage from './pages/OrderPage';
+import { ROUTES } from './config/routes';
 import Notification from './components/Notification';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/symbols" element={<SymbolsPage />} />
-        <Route path="/order" element={<OrderPage />} />
+        {Object.values(ROUTES).map(route => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={<route.element />}
+          />
+        ))}
       </Routes>
       <Notification />
     </Router>

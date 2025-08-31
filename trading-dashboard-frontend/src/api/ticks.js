@@ -1,4 +1,6 @@
-const WS_BASE_URL = 'ws://localhost:8000/ws/ticks';
+import { getWsUrl } from '../config/config';
+
+const WS_BASE_URL = getWsUrl();
 
 /**
  * Opens a WebSocket connection to the tick server
