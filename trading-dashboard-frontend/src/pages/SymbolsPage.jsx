@@ -70,7 +70,7 @@ export default function SymbolsPage() {
                       variant="body2"
                       sx={{ color: '#388e3c', fontWeight: 600 }}
                     >
-                      Close Price: ${s.closePrice}
+                      Close Price: ${s.close_price}
                     </Typography>
                   </CardContent>
                 </Card>

@@ -24,8 +24,8 @@ async def create_order(
         return service.create_order(request)
     except HTTPException as e:
         raise e
-    except Exception:
-        raise HTTPException(status_code=500, detail="Failed to create order")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create order: {str(e)}")
 
 
 @router.get(

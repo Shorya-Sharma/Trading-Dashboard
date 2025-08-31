@@ -3,12 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import routes_orders, routes_symbols
 from app.config import settings
+from app.core.exception_handlers import add_exception_handlers
 
 
 def create_app() -> FastAPI:
     """
     Create and configure the FastAPI application.
-    Includes middleware, routes, and dependencies.
     """
     app = FastAPI(
         title="Trading Dashboard Backend",
@@ -16,7 +16,7 @@ def create_app() -> FastAPI:
         description="Backend service for the live trading dashboard",
     )
 
-    # Enable CORS for frontend clients
+    # Enable CORS
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.CORS_ALLOWED_ORIGINS,
@@ -33,6 +33,9 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["Health"])
     async def health_check():
         return {"status": "ok"}
+
+    # Register global exception handlers
+    add_exception_handlers(app)
 
     return app
 

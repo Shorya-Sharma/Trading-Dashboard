@@ -19,8 +19,8 @@ class OrderService:
 
         symbol_meta = self.symbols[request.symbol]
         min_price, max_price = (
-            symbol_meta.closePrice * 0.8,
-            symbol_meta.closePrice * 1.2,
+            symbol_meta.close_price * 0.8,
+            symbol_meta.close_price * 1.2,
         )
 
         if not (min_price <= request.price <= max_price):
