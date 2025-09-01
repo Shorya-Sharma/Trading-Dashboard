@@ -26,6 +26,17 @@ It supports **live market ticks via WebSocket**, symbol management, order creati
 
 ---
 
+## 🌍 Live Demo
+
+You can access a live version of the trading dashboard.
+
+⚠️ **Important:** The backend service may take a minute to spin up from a cold start.  
+Please **click on the backend URL first**, wait for approximately **one minute**, and then access the frontend URL.
+
+- **Backend:** [https://trading-dashboard-w71t.onrender.com/](https://trading-dashboard-w71t.onrender.com/)  
+- **Frontend:** [https://trading-dashboard-iota-one.vercel.app/](https://trading-dashboard-iota-one.vercel.app/)
+
+
 ## 🛠️ Project Structure
 
 ```
